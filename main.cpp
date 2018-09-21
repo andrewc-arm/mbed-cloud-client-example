@@ -182,6 +182,7 @@ void main_application(void)
 #ifdef MBED_STACK_STATS_ENABLED
     print_stack_statistics();
 #endif
+    printf("Andrew's Pelion Update worked.\r\n");
 
     // Create resource for button count. Path of this resource will be: 3200/0/5501.
     button_res = mbedClient.add_cloud_resource(3200, 0, 5501, "button_resource", M2MResourceInstance::INTEGER,
