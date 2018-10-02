@@ -41,6 +41,7 @@ static M2MResource* pattern_res;
 static M2MResource* blink_res;
 static M2MResource* temp_res;
 static M2MResource* humid_res;
+static M2MResource* rand_res;
 
 // Pointer to mbedClient, used for calling close function.
 static SimpleM2MClient *client;
@@ -206,6 +207,9 @@ void main_application(void)
 	// Create resource for humidity.
     humid_res = mbedClient.add_cloud_resource(3304, 0, 5700, "humid_resource", M2MResourceInstance::FLOAT,
                               M2MBase::GET_ALLOWED, 0, true, NULL, (void*)resource_status_callback);
+	// Create resource for pure random.
+    rand_res = mbedClient.add_cloud_resource(10241, 0, 1, "rand_resource", M2MResourceInstance::INTEGER,
+                              M2MBase::GET_ALLOWED, 0, true, NULL, (void*)resource_status_callback);
 
     // Use delayed response
     blink_res->set_delayed_response(true);
@@ -242,6 +246,7 @@ void main_application(void)
 		} else {
 			printf("DHT SEN11301P error(%d).\r\n", temp_err);
 		}
+        rand_res->set_value(rand());
 
         mcc_platform_do_wait(4000);
     }
