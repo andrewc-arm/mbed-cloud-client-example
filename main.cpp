@@ -40,6 +40,7 @@ static M2MResource* button_res;
 static M2MResource* pattern_res;
 static M2MResource* blink_res;
 static M2MResource* temp_res;
+static M2MResource* humid_res;
 
 // Pointer to mbedClient, used for calling close function.
 static SimpleM2MClient *client;
@@ -200,8 +201,10 @@ void main_application(void)
                              M2MBase::POST_ALLOWED, "", false, (void*)blink_callback, (void*)resource_status_callback);
     
 	// Create resource for temperature.
-	// TODO: Check all the button_res and make it similar
-    temp_res = mbedClient.add_cloud_resource(3303, 0, 5700, "temp_resource", M2MResourceInstance::INTEGER,
+    temp_res = mbedClient.add_cloud_resource(3303, 0, 5700, "temp_resource", M2MResourceInstance::FLOAT,
+                              M2MBase::GET_ALLOWED, 0, true, NULL, (void*)resource_status_callback);
+	// Create resource for humidity.
+    humid_res = mbedClient.add_cloud_resource(3304, 0, 5700, "humid_resource", M2MResourceInstance::FLOAT,
                               M2MBase::GET_ALLOWED, 0, true, NULL, (void*)resource_status_callback);
 
     // Use delayed response
@@ -231,7 +234,9 @@ void main_application(void)
 		temp_err = sensor.readData();
 		if (!temp_err) {
 			float temp_celc = sensor.ReadTemperature(CELCIUS);
-            temp_res->set_value((int)(temp_celc * 100));
+            temp_res->set_value(temp_celc);
+			float humid_val = sensor.ReadHumidity();
+            humid_res->set_value(humid_val);
 		} else if (temp_err == ERROR_CHECKSUM) {
 			// retry
 		} else {
