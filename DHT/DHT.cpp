@@ -56,6 +56,7 @@ int DHT::readData() {
         bitTimes[i] = 0;
     }
 
+	_firsttime=true;
     if (!_firsttime) {
         if (int(currentTime - _lastReadTime) < 2) {
             err = ERROR_NO_PATIENCE;
