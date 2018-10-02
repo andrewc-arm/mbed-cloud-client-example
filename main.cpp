@@ -231,7 +231,7 @@ void main_application(void)
 		temp_err = sensor.readData();
 		if (!temp_err) {
 			float temp_celc = sensor.ReadTemperature(CELCIUS);
-            button_res->set_value((int)(temp_celc * 100));
+            temp_res->set_value((int)(temp_celc * 100));
 		} else if (temp_err == ERROR_CHECKSUM) {
 			// retry
 		} else {
