@@ -23,6 +23,7 @@
 #include "application_init.h"
 #include "mcc_common_button_and_led.h"
 #include "blinky.h"
+#include "DHT.h"
 
 // event based LED blinker, controlled via pattern_resource
 static Blinky blinky;
@@ -38,6 +39,7 @@ int main(void)
 static M2MResource* button_res;
 static M2MResource* pattern_res;
 static M2MResource* blink_res;
+static M2MResource* temp_res;
 
 // Pointer to mbedClient, used for calling close function.
 static SimpleM2MClient *client;
@@ -69,7 +71,7 @@ void blink_callback(void *)
     }
 }
 
-void button_status_callback(const M2MBase& object,
+void resource_status_callback(const M2MBase& object,
                             const M2MBase::MessageDeliveryStatus status,
                             const M2MBase::MessageType /*type*/)
 {
@@ -182,10 +184,12 @@ void main_application(void)
 #ifdef MBED_STACK_STATS_ENABLED
     print_stack_statistics();
 #endif
+	DHT sensor(D4, SEN51035P); // Use the SEN11301P sensor
+    printf("DHT SEN11301P enabled.\r\n");
 
     // Create resource for button count. Path of this resource will be: 3200/0/5501.
     button_res = mbedClient.add_cloud_resource(3200, 0, 5501, "button_resource", M2MResourceInstance::INTEGER,
-                              M2MBase::GET_ALLOWED, 0, true, NULL, (void*)button_status_callback);
+                              M2MBase::GET_ALLOWED, 0, true, NULL, (void*)resource_status_callback);
 
     // Create resource for led blinking pattern. Path of this resource will be: 3201/0/5853.
     pattern_res = mbedClient.add_cloud_resource(3201, 0, 5853, "pattern_resource", M2MResourceInstance::STRING,
@@ -193,7 +197,13 @@ void main_application(void)
 
     // Create resource for starting the led blinking. Path of this resource will be: 3201/0/5850.
     blink_res = mbedClient.add_cloud_resource(3201, 0, 5850, "blink_resource", M2MResourceInstance::STRING,
-                             M2MBase::POST_ALLOWED, "", false, (void*)blink_callback, (void*)button_status_callback);
+                             M2MBase::POST_ALLOWED, "", false, (void*)blink_callback, (void*)resource_status_callback);
+    
+	// Create resource for temperature.
+	// TODO: Check all the button_res and make it similar
+    temp_res = mbedClient.add_cloud_resource(3303, 0, 5700, "temp_resource", M2MResourceInstance::INTEGER,
+                              M2MBase::GET_ALLOWED, 0, true, NULL, (void*)resource_status_callback);
+
     // Use delayed response
     blink_res->set_delayed_response(true);
 
@@ -210,10 +220,25 @@ void main_application(void)
     // Check if client is registering or registered, if true sleep and repeat.
     while (mbedClient.is_register_called()) {
         static int button_count = 0;
-        mcc_platform_do_wait(100);
+		static int temp_err;
+
+        mcc_platform_do_wait(1000);
+
         if (mcc_platform_button_clicked()) {
             button_res->set_value(++button_count);
         }
+
+		temp_err = sensor.readData();
+		if (!temp_err) {
+			float temp_celc = sensor.ReadTemperature(CELCIUS);
+            button_res->set_value((int)(temp_celc * 100));
+		} else if (temp_err == ERROR_CHECKSUM) {
+			// retry
+		} else {
+			printf("DHT SEN11301P error(%d).\r\n", temp_err);
+		}
+
+        mcc_platform_do_wait(4000);
     }
 
     // Client unregistered, exit program.
