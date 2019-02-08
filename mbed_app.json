@@ -9,7 +9,7 @@
         "MDMCTS=NC", 
         "MBEDTLS_TEST_NULL_ENTROPY", 
         "MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES",
-        "ARM_UC_FEATURE_PAL_FLASHIAP=0"
+        "ARM_UC_FEATURE_PAL_FLASHIAP=1"
     ],
     "target_overrides": {
         "*": {
@@ -25,12 +25,11 @@
             "mbed-client.sn-coap-duplication-max-msgs-count": 1,
             "mbed-trace.enable"                 : 1,
             "target.features_add"               : ["STORAGE"],
-            "target.components_add"             : ["SPIF"]
+            "target.components_add"             : ["FLASHIAP"]
         },
         "S5JS100": {
             "lwip.tcpip-thread-stacksize"       : 2048,
             "lwip.mem-size"                     : 25600,
-            "spif-driver.SPI_FREQ"              : 8000000,
             "target.network-default-interface-type" : "CELLULAR",
             "cellular.debug-at"                 : false,
             "cellular.use-apn-lookup"           : false,
@@ -44,7 +43,7 @@
             "client_app.sotp-section-2-size"    : "0x1000",
             "nsapi.default-cellular-plmn"       : 0,
             "nsapi.default-cellular-sim-pin"    : 0,
-            "nsapi.default-cellular-apn"        : "\"iot\"",
+            "nsapi.default-cellular-apn"        : "\"kt.pilot.ip.ktnbiot\"",
             "nsapi.default-cellular-username"   : 0,
             "nsapi.default-cellular-password"   : 0
         }
