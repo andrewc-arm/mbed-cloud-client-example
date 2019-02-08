@@ -3,7 +3,7 @@
     "macros": [
         "MBED_CLIENT_USER_CONFIG_FILE=\"mbed_cloud_client_user_config.h\"",
         "MBED_CLOUD_CLIENT_USER_CONFIG_FILE=\"mbed_cloud_client_user_config.h\"",
-        "MBED_CONF_APP_MAIN_STACK_SIZE=5120",
+        "MBED_CONF_APP_MAIN_STACK_SIZE=12288",
         "PLATFORM_ENABLE_BUTTON=1",
         "PLATFORM_ENABLE_LED=1"
     ],

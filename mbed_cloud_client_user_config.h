@@ -32,7 +32,7 @@
 
 /* set flag to enable update support in mbed Cloud client */
 #ifndef __FREERTOS__
-    #define MBED_CLOUD_CLIENT_SUPPORT_UPDATE
+//    #define MBED_CLOUD_CLIENT_SUPPORT_UPDATE
 #endif
 /* set download buffer size in bytes (min. 1024 bytes) */
 
