@@ -44,7 +44,7 @@
             "nsapi.dns-response-wait-time"      : 30000,
             "client_app.pal_dtls_peer_min_timeout" : "20000",
             "client_app.partition_mode"         : 0,
-            "client_app.primary_partition_size" : "(100*1024)",
+            "client_app.primary_partition_size" : "(1024*1024)",
             "client_app.sotp-section-1-address" : "0x40EF5000",
             "client_app.sotp-section-1-size"    : "0x1000",
             "client_app.sotp-section-2-address" : "0x40EF6000",
